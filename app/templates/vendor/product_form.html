@@ -1,0 +1,100 @@
+{% extends "vendor/base_vendor.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block vendor_content %}
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <h4><i class="bi bi-{% if 'Add' in title %}plus-circle{% else %}pencil{% endif %}"></i> {{ title }}</h4>
+        <hr>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                    {% for error in form.name.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-3 mb-3">
+                    {{ form.category_id.label(class="form-label") }}
+                    {{ form.category_id(class="form-select" + (" is-invalid" if form.category_id.errors else ""), id="categorySelect") }}
+                    {% for error in form.category_id.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-3 mb-3">
+                    {{ form.sub_category_id.label(class="form-label") }}
+                    {{ form.sub_category_id(class="form-select", id="subcategorySelect") }}
+                </div>
+            </div>
+            <div class="mb-3">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control", rows=4) }}
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    {{ form.price.label(class="form-label") }}
+                    {{ form.price(class="form-control" + (" is-invalid" if form.price.errors else ""), step="0.01") }}
+                    {% for error in form.price.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.discounted_price.label(class="form-label") }}
+                    {{ form.discounted_price(class="form-control", step="0.01") }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.stock.label(class="form-label") }}
+                    {{ form.stock(class="form-control" + (" is-invalid" if form.stock.errors else "")) }}
+                    {% for error in form.stock.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    {{ form.image_1.label(class="form-label") }}
+                    {{ form.image_1(class="form-control") }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.image_2.label(class="form-label") }}
+                    {{ form.image_2(class="form-control") }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.image_3.label(class="form-label") }}
+                    {{ form.image_3(class="form-control") }}
+                </div>
+            </div>
+            <div class="mb-3 form-check">
+                {{ form.is_featured(class="form-check-input") }}
+                {{ form.is_featured.label(class="form-check-label") }}
+            </div>
+            <div class="d-grid gap-2 d-md-flex">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('vendor.products') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    function loadSubcategories(categoryId, selectedId) {
+        if (!categoryId) {
+            $('#subcategorySelect').html('<option value="0">-- Select Subcategory (optional) --</option>');
+            return;
+        }
+        $.getJSON('/vendor/api/subcategories/' + categoryId, function(data) {
+            var options = '<option value="0">-- Select Subcategory (optional) --</option>';
+            $.each(data, function(i, sub) {
+                options += '<option value="' + sub.id + '"' + (sub.id == selectedId ? ' selected' : '') + '>' + sub.name + '</option>';
+            });
+            $('#subcategorySelect').html(options);
+        });
+    }
+
+    var initialSelected = {{ form.sub_category_id.data if form.sub_category_id.data and form.sub_category_id.data != 0 else 'null' }};
+    var initialCat = $('#categorySelect').val();
+    if (initialCat) {
+        loadSubcategories(initialCat, initialSelected);
+    }
+
+    $('#categorySelect').change(function() {
+        loadSubcategories($(this).val(), null);
+    });
+});
+</script>
+{% endblock %}

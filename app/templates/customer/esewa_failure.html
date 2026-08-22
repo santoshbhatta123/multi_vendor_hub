@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Payment Failed{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:560px;">
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body text-center p-4">
+            <div style="width:72px;height:72px;border-radius:50%;background:#fdecea;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <i class="bi bi-x-lg" style="font-size:2rem;color:#dc3545;"></i>
+            </div>
+            <h3 class="fw-bold mb-1">Payment Failed</h3>
+            <p class="text-muted mb-4">{{ reason or 'The payment could not be completed.' }}</p>
+
+            {% if payment %}
+            <div class="text-start bg-light rounded p-3 mb-4">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <td class="text-muted">Amount</td>
+                        <td class="text-end fw-semibold">NPR {{ "%.2f"|format(payment.amount|float) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Transaction UUID</td>
+                        <td class="text-end"><code>{{ payment.transaction_uuid }}</code></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Status</td>
+                        <td class="text-end"><span class="badge bg-danger">{{ payment.status }}</span></td>
+                    </tr>
+                </table>
+            </div>
+            {% endif %}
+
+            <p class="text-muted small">No money has been deducted. You can safely try again.</p>
+
+            <div class="d-grid gap-2">
+                {% if payment and payment.order %}
+                <a href="{{ url_for('payment.select_method', order_id=payment.order.id) }}"
+                   class="btn btn-primary btn-lg">
+                    <i class="bi bi-arrow-clockwise"></i> Return to Checkout
+                </a>
+                {% endif %}
+                <a href="{{ url_for('customer.orders') }}" class="btn btn-outline-secondary">
+                    My Orders
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

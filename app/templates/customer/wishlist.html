@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}My Wishlist - Multi Vendor Hub{% endblock %}
+{% block content %}
+<h4><i class="bi bi-heart"></i> My Wishlist</h4>
+{% if products %}
+<div class="row g-3 mt-2">
+    {% for product in products %}
+    <div class="col-6 col-md-3">
+        <div class="card h-100 shadow-sm product-card">
+            <img src="{{ url_for('static', filename='vendor_images/' + (product.image_1 if product.image_1 else 'default_product.png')) }}" class="card-img-top" alt="" style="height:180px;object-fit:cover;">
+            <div class="card-body d-flex flex-column">
+                <h6>{{ product.name[:35] }}</h6>
+                <div class="mt-auto">
+                    <strong>Rs. {{ "%.2f"|format(product.discounted_price or product.price) }}</strong>
+                    <div class="d-flex gap-1 mt-2">
+                        <a href="{{ url_for('customer.product_detail', slug=product.slug) }}" class="btn btn-primary btn-sm flex-grow-1">View</a>
+                        <form action="{{ url_for('customer.toggle_wishlist', product_id=product.id) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-heart-fill"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-heart display-1 text-muted"></i>
+    <h4 class="mt-3">Your wishlist is empty</h4>
+    <a href="{{ url_for('customer.products') }}" class="btn btn-primary btn-lg mt-2">Browse Products</a>
+</div>
+{% endif %}
+{% endblock %}

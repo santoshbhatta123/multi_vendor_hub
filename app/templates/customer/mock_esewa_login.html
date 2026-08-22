@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>eSewa Login</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fb;padding:40px}
+    .card{width:360px;background:#fff;border:1px solid #edf2f7;padding:20px;border-radius:8px;margin:0 auto;box-shadow:0 6px 18px rgba(20,30,60,0.06)}
+    h4{margin:0 0 14px 0}
+    label{display:block;font-size:13px;color:#6b7280;margin-bottom:6px}
+    .input-blue{display:block;width:100%;padding:10px;border-radius:3px;border:1px solid #d6eaf7;background:#eaf6ff;margin-bottom:12px;box-sizing:border-box}
+    .actions{display:flex;gap:10px}
+    .btn-login{background:#60BB46;color:#fff;padding:10px;border-radius:4px;border:0;flex:1;cursor:pointer;font-weight:bold}
+    .btn-cancel{background:#bfc3c6;color:#222;padding:10px;border-radius:4px;border:0;flex:1;cursor:pointer}
+    .note{font-size:12px;color:#7b8794;margin-top:10px}
+    .error{background:#fdecea;color:#c0392b;padding:8px;border-radius:4px;font-size:13px;margin-bottom:12px;display:none}
+    .logo{text-align:center;margin-bottom:10px;font-weight:bold;color:#60BB46;font-size:22px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">eSewa</div>
+    <h4>Login to eSewa</h4>
+
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+    <form id="mockForm" action="{{ url_for('payment.mock_complete') }}" method="GET">
+      <label>eSewa ID:</label>
+      <input name="esewa_id" class="input-blue" value="9806800004" />
+      <label>MPIN:</label>
+      <input name="mpin" type="password" class="input-blue" value="1122" />
+      <label>Token ID:</label>
+      <input name="token_id" class="input-blue" value="123456" />
+      <input type="hidden" name="pid" value="{{ pid }}"/>
+      <input type="hidden" name="su" value="{{ su }}"/>
+      <input type="hidden" name="fu" value="{{ fu }}"/>
+
+      <div class="actions">
+        <button type="submit" name="result" value="success" class="btn-login">LOGIN</button>
+        <button type="submit" name="result" value="fail" class="btn-cancel">CANCEL</button>
+      </div>
+      <p class="note">Demo eSewa sandbox. Use ID: 9806800004 / MPIN: 1122 / Token: 123456</p>
+    </form>
+  </div>
+</body>
+</html>

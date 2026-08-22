@@ -1,0 +1,52 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Subcategories{% endblock %}
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4><i class="bi bi-diagram-2"></i> Subcategories</h4>
+    <a href="{{ url_for('admin.add_subcategory') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Subcategory</a>
+</div>
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Parent Category</th>
+                        <th>Slug</th>
+                        <th>Products</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in subcategories %}
+                    <tr>
+                        <td><strong>{{ sub.name }}</strong></td>
+                        <td>{{ sub.category.name }}</td>
+                        <td><code>{{ sub.slug }}</code></td>
+                        <td>{{ sub.products|length }}</td>
+                        <td>
+                            {% if sub.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.edit_subcategory', id=sub.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <form action="{{ url_for('admin.delete_subcategory', id=sub.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this subcategory?')">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">No subcategories</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

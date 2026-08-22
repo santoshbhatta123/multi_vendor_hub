@@ -1,0 +1,48 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Categories{% endblock %}
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4><i class="bi bi-tags"></i> Categories</h4>
+    <a href="{{ url_for('admin.add_category') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Category</a>
+</div>
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Products</th>
+                        <th>Subcategories</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in categories %}
+                    <tr>
+                        <td><strong>{{ cat.name }}</strong></td>
+                        <td><code>{{ cat.slug }}</code></td>
+                        <td>{{ cat.products|length }}</td>
+                        <td><a href="{{ url_for('admin.subcategories') }}" class="text-decoration-none">{{ cat.subcategories|length }}</a></td>
+                        <td>
+                            {% if cat.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.edit_category', id=cat.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">No categories</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

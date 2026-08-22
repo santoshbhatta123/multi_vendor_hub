@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Products - Multi Vendor Hub{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-funnel"></i> Filters</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('customer.products') }}" method="GET">
+                    {% if search %}<input type="hidden" name="search" value="{{ search }}">{% endif %}
+                    <div class="mb-3">
+                        <label class="form-label">Categories</label>
+                        <div class="list-group">
+                            <a href="{{ url_for('customer.products') }}" class="list-group-item list-group-item-action {% if not category_slug %}active{% endif %}">All</a>
+                            {% for cat in categories %}
+                            <a href="{{ url_for('customer.products') }}?category={{ cat.slug }}" class="list-group-item list-group-item-action {% if category_slug == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% if current_category %}
+                    <div class="mb-3">
+                        <label class="form-label">Subcategories</label>
+                        <div class="list-group">
+                            <a href="{{ url_for('customer.products') }}?category={{ current_category.slug }}" class="list-group-item list-group-item-action {% if not subcategory_slug %}active{% endif %}">All</a>
+                            {% for sub in subcategories %}
+                            <a href="{{ url_for('customer.products') }}?category={{ current_category.slug }}&subcategory={{ sub.slug }}" class="list-group-item list-group-item-action {% if subcategory_slug == sub.slug %}active{% endif %}">{{ sub.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label">Price Range</label>
+                        <div class="input-group input-group-sm mb-2">
+                            <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request.args.get('min_price', '') }}">
+                            <span class="input-group-text">-</span>
+                            <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request.args.get('max_price', '') }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sort By</label>
+                        <select name="sort" class="form-select form-select-sm">
+                            <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+                            <option value="price_low" {% if sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                            <option value="rating" {% if sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+                            <option value="name" {% if sort == 'name' %}selected{% endif %}>Name</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">
+                {% if search %}
+                    Results for "{{ search }}"
+                {% elif category_slug %}
+                    {{ category_slug|replace('-', ' ')|title }}
+                {% else %}
+                    All Products
+                {% endif %}
+            </h4>
+            <small class="text-muted">{{ products.total }} products found</small>
+        </div>
+        {% if products.items %}
+        <div class="row g-3">
+            {% for product in products.items %}
+            <div class="col-6 col-md-4">
+                <div class="card h-100 shadow-sm product-card">
+                    <div class="position-relative">
+                        <img src="{{ url_for('static', filename='vendor_images/' + (product.image_1 if product.image_1 else 'default_product.png')) }}" class="card-img-top" alt="{{ product.name }}" style="height:180px;object-fit:cover;">
+                        {% if product.discounted_price %}
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">-{{ ((1 - product.discounted_price/product.price) * 100)|int }}%</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <small class="text-muted">{{ product.category.name if product.category else '' }}</small>
+                        <h6 class="card-title mt-1">{{ product.name[:35] }}</h6>
+                        <div class="mt-auto">
+                            <div class="mb-2">
+                                {% if product.discounted_price %}
+                                    <strong class="text-danger">Rs. {{ "%.2f"|format(product.discounted_price) }}</strong>
+                                    <small class="text-muted text-decoration-line-through ms-1">Rs. {{ "%.2f"|format(product.price) }}</small>
+                                {% else %}
+                                    <strong>Rs. {{ "%.2f"|format(product.price) }}</strong>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('customer.product_detail', slug=product.slug) }}" class="btn btn-primary btn-sm w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-box-seam display-4 text-muted"></i>
+            <p class="text-muted mt-3">No products found.</p>
+            <a href="{{ url_for('customer.products') }}" class="btn btn-primary">Clear Filters</a>
+        </div>
+        {% endif %}
+
+        {% if products.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == products.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('customer.products', page=page_num, category=category_slug, subcategory=subcategory_slug, search=search, sort=sort, min_price=request.args.get('min_price'), max_price=request.args.get('max_price')) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

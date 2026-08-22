@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Mock eSewa Payment{% endblock %}
+
+{% block extra_css %}
+<style>
+    body { font-family: Arial, sans-serif; }
+    .mock-container { max-width: 640px; margin: 40px auto; }
+    .card { border: 1px solid #ddd; padding: 20px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input[type="text"], input[type="password"] {
+        width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box;
+        border: 1px solid #ccc; border-radius: 4px;
+    }
+    .row { display: flex; gap: 10px; margin-top: 14px; }
+    button { padding: 10px 14px; border: 0; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-pay { background: #60BB46; color: white; flex: 1; }
+    .btn-pay:hover { background: #4ea838; }
+    .btn-cancel { background: #e0e0e0; color: #333; }
+    .btn-cancel:hover { background: #ccc; }
+    .meta { color: #666; font-size: 0.95em; margin-bottom: 8px; }
+    .hint { margin-top: 12px; padding: 10px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; font-size: 0.85em; color: #856404; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mock-container">
+    <div class="card">
+        <h2>Mock eSewa Payment</h2>
+        <p class="meta">Merchant: <strong>Multi Vendor Hub</strong></p>
+        <p class="meta">Order: <strong>{{ order.order_number }}</strong> — Amount: <strong>NPR {{ "%.2f"|format(order.total_amount) }}</strong></p>
+
+        <form action="{{ url_for('payment.process_payment', order_id=order.id) }}" method="POST" id="payForm">
+            <label>eSewa Login ID
+                <input id="esewa_id" name="esewa_id" type="text" value="9801234567" required />
+            </label>
+
+            <label>MPIN
+                <input id="mpin" name="mpin" type="password" value="1234" required />
+            </label>
+
+            <label>Order ID (pid)
+                <input id="pid" type="text" value="{{ order.order_number }}" readonly />
+            </label>
+
+            <label>Amount (tAmt)
+                <input id="tAmt" type="text" value="{{ '%.2f'|format(order.total_amount) }}" readonly />
+            </label>
+
+            <div class="row">
+                <button class="btn-pay" type="submit">Pay (simulate success)</button>
+                <a href="{{ url_for('customer.orders') }}" class="btn-cancel" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">Cancel / Fail</a>
+            </div>
+        </form>
+
+        <div class="hint">
+            <strong>Demo:</strong> eSewa ID: <code>9801234567</code>, MPIN: <code>1234</code><br>
+            This mock page simulates eSewa: after clicking Pay it will process payment locally and redirect to your order.
+        </div>
+    </div>
+</div>
+{% endblock %}

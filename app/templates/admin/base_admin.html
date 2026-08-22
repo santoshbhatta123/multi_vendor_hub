@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="list-group shadow-sm">
+            <a href="{{ url_for('admin.dashboard') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin.vendors') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'admin.vendors' %}active{% endif %}">
+                <i class="bi bi-people"></i> Vendors
+            </a>
+            <a href="{{ url_for('admin.customers') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'admin.customers' %}active{% endif %}">
+                <i class="bi bi-person-badge"></i> Customers
+            </a>
+            <a href="{{ url_for('admin.products') }}" class="list-group-item list-group-item-action {% if request.endpoint in ['admin.products'] %}active{% endif %}">
+                <i class="bi bi-box"></i> Products
+            </a>
+            <a href="{{ url_for('admin.categories') }}" class="list-group-item list-group-item-action {% if request.endpoint in ['admin.categories', 'admin.add_category', 'admin.edit_category'] %}active{% endif %}">
+                <i class="bi bi-tags"></i> Categories
+            </a>
+            <a href="{{ url_for('admin.subcategories') }}" class="list-group-item list-group-item-action {% if request.endpoint in ['admin.subcategories', 'admin.add_subcategory', 'admin.edit_subcategory'] %}active{% endif %}">
+                <i class="bi bi-diagram-2"></i> Subcategories
+            </a>
+            <a href="{{ url_for('admin.orders') }}" class="list-group-item list-group-item-action {% if request.endpoint in ['admin.orders', 'admin.order_detail'] %}active{% endif %}">
+                <i class="bi bi-truck"></i> Orders
+            </a>
+            <a href="{{ url_for('admin.reviews') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'admin.reviews' %}active{% endif %}">
+                <i class="bi bi-star"></i> Reviews
+            </a>
+            <a href="{{ url_for('admin.reports') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'admin.reports' %}active{% endif %}">
+                <i class="bi bi-graph-up"></i> Reports
+            </a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        {% block admin_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

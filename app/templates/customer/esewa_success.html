@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Payment Successful{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:560px;">
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body text-center p-4">
+            <div style="width:72px;height:72px;border-radius:50%;background:#e6f7ec;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <i class="bi bi-check-lg" style="font-size:2.2rem;color:#28a745;"></i>
+            </div>
+            <h3 class="fw-bold mb-1">Payment Successful</h3>
+            <p class="text-muted mb-4">Your transaction has been completed and verified by eSewa.</p>
+
+            <div class="text-start bg-light rounded p-3 mb-4">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <td class="text-muted">Order Number</td>
+                        <td class="text-end fw-semibold">{{ order.order_number if order else '—' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Amount</td>
+                        <td class="text-end fw-semibold">NPR {{ "%.2f"|format(payment.amount|float) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Payment Method</td>
+                        <td class="text-end fw-semibold">eSewa</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Transaction UUID</td>
+                        <td class="text-end"><code>{{ payment.transaction_uuid }}</code></td>
+                    </tr>
+                    {% if payment.transaction_code %}
+                    <tr>
+                        <td class="text-muted">Transaction Code</td>
+                        <td class="text-end"><code>{{ payment.transaction_code }}</code></td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td class="text-muted">Status</td>
+                        <td class="text-end"><span class="badge bg-success">{{ payment.status }}</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('customer.order_detail', id=order.id) if order else url_for('customer.orders') }}"
+                   class="btn btn-success btn-lg">
+                    <i class="bi bi-receipt"></i> View Order
+                </a>
+                <a href="{{ url_for('customer.home') }}" class="btn btn-outline-secondary">
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

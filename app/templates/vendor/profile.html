@@ -1,0 +1,54 @@
+{% extends "vendor/base_vendor.html" %}
+{% block title %}Store Profile{% endblock %}
+{% block vendor_content %}
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <h4><i class="bi bi-shop"></i> Store Profile</h4>
+        <hr>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.store_name.label(class="form-label") }}
+                    {{ form.store_name(class="form-control" + (" is-invalid" if form.store_name.errors else "")) }}
+                    {% for error in form.store_name.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.phone.label(class="form-label") }}
+                    {{ form.phone(class="form-control") }}
+                </div>
+            </div>
+            <div class="mb-3">
+                {{ form.store_description.label(class="form-label") }}
+                {{ form.store_description(class="form-control", rows=4) }}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.address.label(class="form-label") }}
+                    {{ form.address(class="form-control", rows=2) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.city.label(class="form-label") }}
+                    {{ form.city(class="form-control") }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.store_logo.label(class="form-label") }}
+                    {{ form.store_logo(class="form-control") }}
+                    {% if vendor.store_logo %}
+                    <small class="text-muted">Current: {{ vendor.store_logo }}</small>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.store_banner.label(class="form-label") }}
+                    {{ form.store_banner(class="form-control") }}
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

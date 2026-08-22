@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Checkout - Multi Vendor Hub{% endblock %}
+{% block content %}
+<h4><i class="bi bi-credit-card"></i> Checkout</h4>
+<div class="row">
+    <div class="col-md-7">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h5>Shipping Details</h5>
+                <hr>
+                <form method="POST" action="">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" value="{{ customer.full_name or '' }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Shipping Address</label>
+                        <textarea name="shipping_address" class="form-control" rows="3" required>{{ customer.shipping_address or customer.address or '' }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control" value="{{ customer.phone or '' }}" required>
+                    </div>
+                    <button type="submit" name="esewa" value="1" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-wallet2"></i> Pay with eSewa
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Order Summary</h5>
+                <hr>
+                {% for item in cart_items %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span>{{ item.product.name[:25] }} x {{ item.quantity }}</span>
+                    <span>Rs. {{ "%.2f"|format((item.product.discounted_price or item.product.price) * item.quantity) }}</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <h5>Total</h5>
+                    <h5>Rs. {{ "%.2f"|format(total) }}</h5>
+                </div>
+                <div class="alert alert-info mt-3 mb-0">
+                    <i class="bi bi-info-circle"></i> You will be redirected to eSewa for payment.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

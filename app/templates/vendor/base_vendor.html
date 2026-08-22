@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body text-center">
+                <img src="{{ url_for('static', filename='vendor_images/' + (vendor.store_logo if vendor else 'default_store.png')) }}" alt="" class="rounded-circle mb-2" style="width:80px;height:80px;object-fit:cover;">
+                <h6 class="mb-0">{{ vendor.store_name if vendor else 'My Store' }}</h6>
+                <small class="text-muted">Vendor</small>
+            </div>
+        </div>
+        <div class="list-group shadow-sm">
+            <a href="{{ url_for('vendor.dashboard') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'vendor.dashboard' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="{{ url_for('vendor.profile') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'vendor.profile' %}active{% endif %}">
+                <i class="bi bi-shop"></i> Store Profile
+            </a>
+            <a href="{{ url_for('vendor.products') }}" class="list-group-item list-group-item-action {% if request.endpoint in ['vendor.products', 'vendor.add_product', 'vendor.edit_product'] %}active{% endif %}">
+                <i class="bi bi-box"></i> Products
+            </a>
+            <a href="{{ url_for('vendor.orders') }}" class="list-group-item list-group-item-action {% if request.endpoint in ['vendor.orders', 'vendor.order_detail'] %}active{% endif %}">
+                <i class="bi bi-truck"></i> Orders
+            </a>
+            <a href="{{ url_for('vendor.earnings') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'vendor.earnings' %}active{% endif %}">
+                <i class="bi bi-currency-rupee"></i> Earnings
+            </a>
+            <a href="{{ url_for('vendor.reviews') }}" class="list-group-item list-group-item-action {% if request.endpoint == 'vendor.reviews' %}active{% endif %}">
+                <i class="bi bi-star"></i> Reviews
+            </a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        {% block vendor_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
