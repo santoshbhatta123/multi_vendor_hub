@@ -19,13 +19,7 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    import pymysql
-    try:
-        conn = pymysql.connect(host='localhost', user='root', password='')
-        conn.cursor().execute('CREATE DATABASE IF NOT EXISTS multi_vendor_hub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci')
-        conn.close()
-    except Exception:
-        pass
+   
 
     db.init_app(app)
     bcrypt.init_app(app)
