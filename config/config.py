@@ -6,8 +6,17 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'multi-vendor-hub-secret-key-2025'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'mysql+pymysql://root:@localhost/multi_vendor_hub'
+ database_url = os.environ.get('DATABASE_URL')
+
+if database_url and database_url.startswith('postgres://'):
+    database_url = database_url.replace(
+        'postgres://',
+        'postgresql://',
+        1
+    )
+
+SQLALCHEMY_DATABASE_URI = database_url or \
+    'sqlite:///multi_vendor_hub.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WTF_CSRF_ENABLED = True
     REMEMBER_COOKIE_DURATION = timedelta(days=7)
